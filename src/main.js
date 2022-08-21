@@ -17,3 +17,7 @@ function startGame() {
 window.progress = () => {
   game.progress();
 };
+
+window.selectAction = value => {
+  game.selectAction(value);
+};

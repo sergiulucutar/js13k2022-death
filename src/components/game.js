@@ -130,4 +130,8 @@ class Game {
   progress() {
     this.lvl.progress();
   }
+
+  selectAction(value) {
+    this.lvl.selectAction(value);
+  }
 }

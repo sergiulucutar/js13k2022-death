@@ -1,10 +1,12 @@
 const inventoryEl = document.querySelector('.inventory');
 const seedsEl = inventoryEl.querySelector('#inventory__seeds');
+const petalsEl = inventoryEl.querySelector('#inventory__petals');
 
 class Inventory {
   constructor() {
     this.state = {
-      seeds: 6
+      seeds: 3,
+      petals: 0
     };
   }
 
@@ -17,7 +19,13 @@ class Inventory {
     this.render();
   }
 
+  addYield(amount) {
+    this.state.petals += amount;
+    this.render();
+  }
+
   render() {
     seedsEl.innerText = this.state.seeds;
+    petalsEl.innerText = this.state.petals;
   }
 }

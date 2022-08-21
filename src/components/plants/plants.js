@@ -16,6 +16,14 @@ class Flower extends Plant {
   stages = ['seed', 'grow', 'grow', 'grow', 'flower', 'weathered', 'seed'];
   type = 'flower';
 
+  get isDead() {}
+
+  isDead(reverse) {
+    return reverse
+      ? this.currentStage === 0
+      : this.currentStage === this.stages.length - 1;
+  }
+
   setYield() {
     this.yield = Utils.random(this.minYield, this.maxYield);
   }

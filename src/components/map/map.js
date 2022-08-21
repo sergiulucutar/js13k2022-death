@@ -16,7 +16,7 @@ class Map {
     for (let i = 0; i < this.gridSize.width; i++) {
       const row = [];
       for (let j = 0; j < this.gridSize.height; j++) {
-        if (Math.random() > 0.6) {
+        if (Math.random() > 0.9) {
           row.push({
             plant: 'root'
           });
@@ -41,12 +41,25 @@ class Map {
     for (let i = 0; i < this.gridSize.width; i++) {
       for (let j = 0; j < this.gridSize.height; j++) {
         const plant = this.grid[i][j].plant;
+        if (
+          plant &&
+          plant.type === 'root' &&
+          !otherMap.getLocation(i, j).plant
+        ) {
+          this.resetLocation(i, j);
+        }
+
         if (plant && plant.type === 'flower') {
           plant.progress(direction);
           if (otherMap.getLocation(i, j).plant) {
             plant.progress(direction);
             plant.progress(direction);
             otherMap.resetLocation(i, j);
+          }
+
+          if (plant.isDead(!!direction)) {
+            otherMap.getLocation(i, j).plant = new Flower();
+            this.grid[i][j] = 'root';
           }
         }
       }

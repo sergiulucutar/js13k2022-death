@@ -10,14 +10,24 @@
     <section class="level">
       <canvas></canvas>
       <div class="btn__wrapper">
-        <button class="btn btn__progress" onclick="progress()">Progress</button>
+        <button class="btn btn__progress" onclick="progress()">→ <span id="turnCount"></span></button>
         <div class="inventory">
-          Seeds: <span id="inventory__seeds"></span>
+          <div>Seeds: <span id="inventory__seeds"></span></div>
+          <div>Petals: <span id="inventory__petals"></span></div>
         </div>
         <div class="actions">
-          <input type="radio" id="huey" name="action" />
-          <input type="radio" id="huey" name="action" />
-          <input type="radio" id="huey" name="action" />
+          <label>
+            <input type="radio" name="action" value="PLANT" onclick="selectAction('PLANT')" checked/>
+            <span>Plant</span>
+          </label>
+          <label>
+            <input type="radio" name="action" value="HARVEST" onclick="selectAction('HARVEST')"/>
+            <span>Harvest</span>
+          </label>
+          <label>
+            <input type="radio" name="action" value="REMOVE" onclick="selectAction('REMOVE')"/>
+            <span>Removes</span>
+          </label>
         </div>
       </div>
     </section>
