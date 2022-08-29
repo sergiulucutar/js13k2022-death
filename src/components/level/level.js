@@ -1,133 +1,102 @@
-var scoreRoundEl = document.querySelector('.score-level_round');
-var scoreLevelEl = document.querySelector('.score-level_text');
-var scoreOverlayEl = document.querySelectorAll(
-  '.score-level_indicator-overlay'
-);
-var turnCountEl = document.querySelector('#turnCount');
-
 class Level {
-  ACTION_TYPES = {
-    PLANT: 'plant',
-    HARVEST: 'harvest',
-    REMOVE: 'remove'
-  };
-
   constructor(game) {
     this.game = game;
     this.renderer = new LevelRenderer(game, this);
-    this.inventory = new Inventory();
-    this.inventory.render();
     this.isIntroPlaying = false;
-
-    this.selectedAction = this.ACTION_TYPES.PLANT;
-    this.isActionAvailable = true;
-    this.turnCount = 5;
-    turnCountEl.innerText = this.turnCount;
-
-    this.rounds = 0;
-    this.nextRound();
   }
 
-  nextRound() {
-    this.rounds++;
-    this.maps = {
-      life: new Map(this.game),
-      death: new Map(this.game)
-    };
+  init() {
+    this.poem = new Poem();
+
+    this.characters = new Characters(this.game);
+    this.characters.init();
+    this.characters.render(this.poem.getHtml(this.characters.selectedFamilies));
+    this.deadCharacters = [];
+
+    this.killCharacter(this.characters.characters[0]);
+    this.revealInfo(this.characters.characters[0]);
   }
-  progress() {
-    if (!this.turnCount) {
-      this.turnCount += this.getMemoriesCount();
-      return;
+
+  killCharacter(character) {
+    character.isDead = true;
+    this.deadCharacters.push(character);
+    this.characters.revealFirstName(character);
+    this.characters.revealFamilyName(character);
+    this.characters.showDead(character);
+  }
+
+  revealInfo(deadChar) {
+    const remainingCharacters = this.characters.characters.filter(
+      chr => !chr.isDead
+    );
+    if (remainingCharacters.length) {
+      const killer =
+        remainingCharacters[Utils.random(0, remainingCharacters.length - 1)];
+      this.characters.revealFirstName(killer);
     }
-
-    this.turnCount--;
-    turnCountEl.innerText = this.turnCount;
-    this.isActionAvailable = true;
-    this.maps.life.progress(1, this.maps.death);
-    this.maps.death.progress(-1, this.maps.life);
-    if (!this.turnCount) {
-      document.body.classList.add('death');
-    }
-  }
-
-  getMemoriesCount() {
-    let memories = 0;
-    const { life, death } = this.maps;
-    for (let i = 0; i < life.gridSize.width; i++) {
-      for (let j = 0; j < life.gridSize.height; j++) {
-        if (life.grid[i][j].plant && death.grid[i][j].plant) {
-          memories++;
-        }
-      }
-    }
-
-    return memories;
-  }
-
-  reset() {
-    this.rounds = 0;
-    this.extras = [];
-    this.nextRound();
   }
 
   render() {
     this.renderer.render();
   }
 
-  update() {}
-
   triggerGameOver() {
     this.isIntroPlaying = true;
     this.game.gameOver();
-    this.animateOutro(() => {});
+    // this.animateOutro(() => {});
   }
 
-  getMapLocation(x, y) {
-    return this.renderer.getMapLocation(x, y);
-  }
-
-  selectAction(value) {
-    if (this.isActionAvailable) {
-      this.selectedAction = this.ACTION_TYPES[value];
+  isSolutionGood() {
+    if (this.deadCharacters.length !== this.characters.characters.length) {
+      return false;
     }
-  }
 
-  handleClick(event) {
-    switch (this.selectedAction) {
-      case this.ACTION_TYPES.PLANT:
-        this.plant(event.clientX, event.clientY);
-        break;
-      case this.ACTION_TYPES.HARVEST:
-        this.harvest(event.clientX, event.clientY);
-        break;
-      case this.ACTION_TYPES.REMOVE:
-        this.dispose(event.clientX, event.clientY);
-        break;
-    }
-    // this.isActionAvailable = false;
-  }
-
-  plant(x, y) {
-    if (this.inventory.canPlant()) {
-      const location = this.getMapLocation(x, y);
-      if (location && location.location) {
-        location.location.plant = new Flower();
-        this.inventory.plantSeed();
+    let indexCount = 0;
+    for (let i = 0; i < this.characters.characters.length; i++) {
+      const familyIndex = this.characters.selectedFamilies.findIndex(
+        selFam => selFam.name === this.deadCharacters[i].family
+      );
+      if (familyIndex >= indexCount) {
+        indexCount = familyIndex;
+      } else {
+        return false;
       }
     }
+
+    return true;
   }
 
-  harvest(x, y) {
-    const location = this.getMapLocation(x, y);
-    if (location.location && location.location.plant.type === 'flower') {
-      this.inventory.addYield(location.location.plant.yield);
-      location.location.plant.yield = 0;
+  isCharactersDead() {
+    return this.characters.characters.every(char => char.isDead);
+  }
+
+  revive() {
+    this.characters.characters.forEach(chr => {
+      this.characters.isDead = false;
+      const characterEl = document.querySelector(
+        `[data-charactername="${chr.name}"]`
+      );
+      characterEl.classList.remove('character--dead');
+    });
+  }
+
+  handleSubmit(value) {
+    const character = this.characters.characters.find(
+      chr => chr.name.toLowerCase() === value.toLowerCase()
+    );
+
+    if (character) {
+      this.killCharacter(character);
+      this.revealInfo(character);
     }
-  }
 
-  dispose(x, y) {
-    const location = this.getMapLocation(x, y);
-    location.map.resetLocation(location.position[0], location.position[1]);
+    if (this.isCharactersDead()) {
+      if (this.isSolutionGood()) {
+        console.log('YOU WON');
+      } else {
+        console.log('YOU LOST');
+        this.revive();
+      }
+    }
   }
 }
