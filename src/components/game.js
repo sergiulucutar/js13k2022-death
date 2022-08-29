@@ -1,38 +1,26 @@
-var scoreEl = document.querySelector('.score-level_total');
 var levelEl = document.querySelector('.level');
 var endEl = document.querySelector('.end');
-var specialSreenEl = document.querySelector('.screen-special');
+var inputEl = document.querySelector('#chrname');
 
 class Game {
-  get score() {
-    return this._score;
-  }
-
-  set score(value) {
-    this._score = value;
-    scoreEl.innerText = this.score;
-  }
-
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
 
     this.lvl = new Level(this);
-    this.history = new History();
 
-    this._score = 0;
     this.isMenuShown = false;
     this.showStoryending = false;
 
     this.loopProps = {
-      fpsInterval: 1000 / 60,
-      then: Date.now(),
-      startTime: Date.now(),
-      now: Date.now(),
-      elapsed: 0
+      now: null,
+      elapsed: 0,
+      then: Date.now()
     };
 
     this.registerEvents();
+
+    this.lvl.init();
   }
 
   loop() {
@@ -62,19 +50,7 @@ class Game {
     }
   }
 
-  updateScore(value) {
-    this.score += value;
-    scoreEl.classList.add('pop');
-    scoreLevelEl.classList.add('pop');
-    setTimeout(() => scoreLevelEl.classList.remove('pop'), 1000);
-    setTimeout(() => {
-      scoreEl.classList.remove('pop');
-    }, 210);
-  }
-
   resetLevel() {
-    this.score = 0;
-
     this.lvl = new Level(this);
     levelEl.classList.remove('hidden');
     endEl.classList.add('hidden');
@@ -101,37 +77,16 @@ class Game {
     endEl.classList.remove('hidden');
   }
 
-  getHistoryMarkup() {
-    let html = '';
-    this.history.get().forEach(element => {
-      html += `<div><span>${element.score} ${
-        element.name ? element.name : ''
-      }</span></div>`;
-    });
-    return html;
-  }
-
-  setEndButtonText(text) {
-    const button = endEl.querySelector('button');
-    button.innerText = text;
-    button.dataset.text = text;
-  }
-
   registerEvents() {
-    this.canvas.addEventListener('click', event => {
-      this.lvl.handleClick(event);
-    });
-
-    // document.addEventListener('keydown', event => {
-    //   this.lvl.handleKey(event);
+    // this.canvas.addEventListener('click', event => {
+    //   this.lvl.handleClick(event);
     // });
-  }
 
-  progress() {
-    this.lvl.progress();
-  }
-
-  selectAction(value) {
-    this.lvl.selectAction(value);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        this.lvl.handleSubmit(inputEl.value);
+        inputEl.value = '';
+      }
+    });
   }
 }

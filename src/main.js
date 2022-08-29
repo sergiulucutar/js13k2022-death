@@ -21,3 +21,5 @@ window.progress = () => {
 window.selectAction = value => {
   game.selectAction(value);
 };
+
+window.pickCard = value => game.pickCard(cardIndex);
