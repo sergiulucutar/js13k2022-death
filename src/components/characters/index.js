@@ -36,6 +36,59 @@ const families = [
   }
 ];
 
+const tags = {
+  DEAD: 'dead',
+  ALIVE: 'alive'
+};
+
+const powers = [
+  {
+    id: 1,
+    text: '+3 ink',
+    tag: tags.DEAD
+  },
+  {
+    id: 2,
+    text: 'vowels cost no ink',
+    tag: tags.DEAD
+  },
+  {
+    id: 3,
+    text: '50% to drop a memory tag',
+    tag: tags.DEAD
+  },
+  {
+    id: 4,
+    text: 'each kill +1 ink',
+    tag: tags.DEAD
+  },
+  {
+    id: 5,
+    text: 'on kill, tag another character with "killer" tag',
+    tag: tags.ALIVE
+  },
+  {
+    id: 6,
+    text: 'each kill +1 ink',
+    tag: tags.ALIVE
+  },
+  {
+    id: 7,
+    text: '50% change to drop a memory',
+    tag: tags.ALIVE
+  },
+  {
+    id: 8,
+    text: 'each revive +1 ink',
+    tag: tags.ALIVE
+  },
+  {
+    id: 9,
+    text: '+1 ink for each person alive',
+    tag: tags.DEAD
+  }
+];
+
 class Characters {
   constructor(game) {
     this.game = game;
@@ -53,7 +106,8 @@ class Characters {
       const character = {
         name: auxNames[randomName],
         family: this.selectedFamilies[randomFamily].name,
-        isDead: false
+        isDead: false,
+        power: powers[i]
       };
       auxNames = auxNames.filter(n => n !== character.name);
       this.characters.push(character);
@@ -62,6 +116,13 @@ class Characters {
 
   render(poemHtml) {
     this.renderer.render(this.characters, poemHtml);
+  }
+
+  tagKiller() {
+    const aliveCharacters = this.characters.filter(char => !char.isDead);
+    const randomIndex = Utils.random(0, aliveCharacters.length);
+    aliveCharacters[randomIndex].isKiller = true;
+    this.renderer.setKiller(aliveCharacters[randomIndex]);
   }
 
   _selectFamilies(count = 3) {

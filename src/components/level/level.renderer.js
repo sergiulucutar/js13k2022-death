@@ -1,3 +1,5 @@
+const inkEl = document.querySelector('.ink');
+
 class LevelRenderer {
   constructor(game, level) {
     this.game = game;
@@ -9,6 +11,14 @@ class LevelRenderer {
   }
 
   render() {}
+
+  showInk(ink) {
+    let html = '';
+    for (let i = 0; i < ink; i++) {
+      html += '<span></span>';
+    }
+    inkEl.innerHTML = html;
+  }
 
   addRenderHook(callback, name) {
     this.renderHooks[name] = callback;

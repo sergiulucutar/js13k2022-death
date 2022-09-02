@@ -128,9 +128,14 @@ canvas {
   position: absolute;
   top: 14px;
 
+  width: 33.3%;
+
   z-index: 10;
 
   input {
+    width: 100%;
+    margin-top: 6px;
+
     border: 0;
     background-color: #E9E2C4;
     font-size: 2rem;
@@ -152,6 +157,8 @@ canvas {
   width: 12.36vmax;//9.6vw;
   height: 20vmax;//15.5vw;
   min-width: 0;
+
+  text-align: center;
 }
 
 .poem {
@@ -196,6 +203,10 @@ canvas {
   &--dead {
     opacity: 0.4;
   }
+
+  &.character--killer {
+    background-color: red;
+  }
 }
 
 .characters__wrapper {
@@ -203,4 +214,29 @@ canvas {
   grid-template-columns: repeat(5, 250px);
   grid-template-rows: masonry;
   grid-gap: 14px;
+}
+
+.character__ability {
+  display: inline-block;
+}
+
+.ink {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 2.8vw;
+
+  > span {
+    display: inline-block;
+    width: 1.295vw;
+    height: 1.295vw;
+
+    align-self: flex-end;
+
+    border-radius: 50%;
+    margin-right: 6px;
+    margin-top: 6px;
+
+    background-color: var(--c_white);
+  }
 }
