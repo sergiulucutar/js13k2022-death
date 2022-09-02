@@ -7,19 +7,14 @@ window.onload = () => {
   canvas.height = document.body.offsetHeight;
 
   game = new Game(canvas);
-  startGame();
+  // startGame();
 };
 
 function startGame() {
   game.loop();
 }
 
-window.progress = () => {
-  game.progress();
+window.write = () => {
+  // game.write();
+  console.log('WRITE');
 };
-
-window.selectAction = value => {
-  game.selectAction(value);
-};
-
-window.pickCard = value => game.pickCard(cardIndex);

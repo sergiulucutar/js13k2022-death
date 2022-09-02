@@ -12,6 +12,7 @@ class CharactersRenderer {
       <div class="card character" data-characterName="${character.name}">
         <div class="character__portrait"></div>
         <div class="character__name"><span>???</span> <span>???</span></div>
+        <div class="character__ability">${character.power.tag}: ${character.power.text}</div>
       </div>`;
     });
     charactersEl.innerHTML = html;
@@ -33,6 +34,11 @@ class CharactersRenderer {
     );
 
     familyNameEl.innerText = character.family;
+  }
+
+  setKiller(character) {
+    const characterEl = this._getCharacterEl(character);
+    characterEl.classList.add('character--killer');
   }
 
   showDead(character) {

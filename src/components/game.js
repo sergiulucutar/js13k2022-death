@@ -21,6 +21,7 @@ class Game {
     this.registerEvents();
 
     this.lvl.init();
+    this.isInputDisabled = false;
   }
 
   loop() {
@@ -86,6 +87,18 @@ class Game {
       if (event.key === 'Enter') {
         this.lvl.handleSubmit(inputEl.value);
         inputEl.value = '';
+      }
+    });
+
+    inputEl.addEventListener('keyup', event => {
+      const isWritten = this.lvl.write(inputEl.value.length);
+      this.isInputDisabled = !isWritten;
+    });
+
+    inputEl.addEventListener('keypress', event => {
+      if (this.isInputDisabled) {
+        event.preventDefault();
+        return false;
       }
     });
   }
