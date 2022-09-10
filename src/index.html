@@ -10,14 +10,30 @@
     <section class="level">
       <canvas></canvas>
       <div class="content">
-        <div class="characters__wrapper">
+        <div class="characters__wrapper"></div>
+        <div class="card character btn character__shop__btn" onclick="toggleWorkerShop()">+</div>
+      </div>
+      <div class="stats">
+        <div class="timer__content"></div>
+        <div class="btn essence__life" data-value="0"><div class="heart">❤</div></div>
+        <div class="inventory">
+          <ul>
+            <li>
+              <span>💀</span>
+              <span id="essence-death">0</span>
+            </li>
+            <li>
+              <span>👻</span>
+              <span id="essence-soul">0</span>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="input__wrapper">
-        <div class="ink">
-        </div>
-        <input type="text" id="chrname" autocomplete="off" list="autocompleteOff" spellcheck="false" />
-      </div>
+      <div class="clipboard"><span class="clipboard__data" data-value="10"></span></div>
+      <div class="shop shop--worker"></div>
+    </section>
+    <section class="endgame">
+      <h1>Game Over</h1>
     </section>
     <script src="main.js"></script>
   </body>

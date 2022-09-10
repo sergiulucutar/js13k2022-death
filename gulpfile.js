@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify-es').default;
+var htmlMin = require('gulp-minify-html');
 var sass = require('gulp-sass')(require('sass'));
 var csso = require('gulp-csso');
 var browserSync = require('browser-sync').create();
@@ -35,6 +36,14 @@ gulp.task('copy', function () {
     .pipe(browserSync.stream());
 });
 
+gulp.task('copy-prod', function () {
+  return gulp
+    .src('./src/**/*.html')
+    .pipe(htmlMin())
+    .pipe(gulp.dest('./build/'))
+    .pipe(browserSync.stream());
+});
+
 gulp.task('sass', function () {
   return gulp
     .src('./src/**/*.scss')
@@ -55,4 +64,4 @@ gulp.task('watch', function () {
 
 gulp.task('default', gulp.series('build', 'sass', 'copy', 'watch'));
 
-gulp.task('prod', gulp.series('build-prod', 'sass', 'copy'));
+gulp.task('prod', gulp.series('build-prod', 'sass', 'copy-prod'));
