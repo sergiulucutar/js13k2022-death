@@ -14,7 +14,5 @@ function startGame() {
   game.loop();
 }
 
-window.write = () => {
-  // game.write();
-  console.log('WRITE');
-};
+window.characterClick = charId => game.characterClick(charId);
+window.toggleWorkerShop = () => game.toggleWorkerShop();
